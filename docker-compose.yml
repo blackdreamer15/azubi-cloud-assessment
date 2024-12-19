@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  database:
+    image: mongo:latest
+    container_name: mongo_db_container
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+    volumes:
+      - ./../mydata:/data/db
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mydata:
