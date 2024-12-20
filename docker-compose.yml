@@ -32,9 +32,9 @@ services:
     volumes:
       - ./../mydata:/data/db
 
+volumes:
+  mydata:
+
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  mydata:
