@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   frontend:
     build:
@@ -30,7 +29,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ./../mydata:/data/db
+      - mydata:/data/db
 
 volumes:
   mydata:
