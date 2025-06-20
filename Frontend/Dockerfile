@@ -1,5 +1,5 @@
 # Step 1: Build stage for the frontend application
-FROM node:22-alpine3.20 AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN npm run build
 
 
 # Step 2: Serve stage for the frontend application
-FROM nginx:1.27-alpine
+FROM nginx:stable-alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
