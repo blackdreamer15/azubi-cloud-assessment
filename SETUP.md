@@ -61,7 +61,7 @@ docker-compose up --build
 
 You'll see lots of output - that's normal! Look for messages like:
 
-- "Server is running on http://localhost:3000"
+- "Server is running on [http://localhost:3000](http://localhost:3000)"
 - "Connected to MongoDB"
 - Frontend container completing its build
 

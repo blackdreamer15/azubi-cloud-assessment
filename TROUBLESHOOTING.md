@@ -104,6 +104,7 @@ docker-compose logs database
 - Database container state corruption from previous runs
 
 **Solutions**:
+
 ```zsh
 # Check backend connection string includes authSource=admin
 # Should be: mongodb://rootuser:rootpassword123@database:27017?authSource=admin
