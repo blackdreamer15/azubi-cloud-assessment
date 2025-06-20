@@ -38,9 +38,10 @@ When you open the app in your browser, here's what happens:
 
 ### Database Service
 
-- **What it runs**: MongoDB database for storing todo items
+- **What it runs**: MongoDB database for storing todo items with authentication
 - **Inside the container**: MongoDB runs on port 27017 (standard MongoDB port)
 - **On your computer**: Available at [mongodb://localhost:27017](mongodb://localhost:27017)
+- **Authentication**: Secured with username/password authentication
 - **Why this setup**: Direct port mapping allows you to connect with database tools if needed
 
 ## Security Features Built-In
@@ -59,7 +60,16 @@ We've designed each container with security in mind:
 
 - **Frontend container**: Runs nginx web server, which naturally runs with limited privileges
 - **Backend container**: Uses the standard Node.js user (not the dangerous "root" user)
-- **Database container**: Uses MongoDB's official Docker image with built-in security practices
+- **Database container**: Uses MongoDB's official Docker image with authentication enabled
+
+### Database Authentication
+
+Your MongoDB database is secured with:
+
+- **Username**: `rootuser`
+- **Password**: `rootpassword123`
+- **Authentication Database**: `admin` (where MongoDB stores root users)
+- **Connection String**: Backend uses `authSource=admin` for proper authentication
 
 ### Data Protection
 
@@ -81,6 +91,9 @@ ports:
   - "5173:80"   # Frontend accessible from outside
   - "3000:3000" # Backend accessible for testing
   - "27017:27017" # Database accessible for debugging
+environment:
+  - MONGO_INITDB_ROOT_USERNAME=rootuser
+  - MONGO_INITDB_ROOT_PASSWORD=rootpassword123
 ```
 
 ### What You'd Want in Production
