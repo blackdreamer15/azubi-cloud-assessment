@@ -28,11 +28,11 @@ check_backend() {
 }
 
 check_frontend() {
-  echo "Verifying Frontend on port 80..."
-  if nc -zv localhost 80 2>/dev/null; then
-    echo "Frontend is running on port 80 ✅"
+  echo "Verifying Frontend on port 5173..."
+  if nc -zv localhost 5173 2>/dev/null; then
+    echo "Frontend is running on port 5173 ✅"
   else
-    echo "❌ Frontend is NOT running on port 80"
+    echo "❌ Frontend is NOT running on port 5173"
     exit 1
   fi
 }
@@ -50,7 +50,7 @@ check_database() {
 }
 
 check_service "Backend" 3000
-check_service "Frontend" 80
+check_service "Frontend" 5173
 check_service "MongoDB" 27017
 check_database
 
