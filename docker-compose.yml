@@ -1,5 +1,6 @@
 services:
   frontend:
+    container_name: frontend
     build:
       context: ./Frontend
       dockerfile: Dockerfile
@@ -9,8 +10,10 @@ services:
       - backend
     networks:
       - app-network
+    restart: always
 
   backend:
+    container_name: backend
     build:
       context: ./Backend
       dockerfile: Dockerfile
@@ -20,20 +23,25 @@ services:
       - database
     networks:
       - app-network
+    restart: always
 
   database:
     image: mongo:latest
-    container_name: mongo_db_container
+    container_name: database
     ports:
       - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rootuser
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword123
     networks:
       - app-network
     volumes:
       - mydata:/data/db
-
-volumes:
-  mydata:
+    restart: always
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mydata:

@@ -93,7 +93,30 @@ docker-compose logs database
 - Check database volume: `docker volume ls`
 - Restart database: `docker-compose restart database`
 
-### 5. Build Failures
+### 5. MongoDB Authentication Errors
+
+**Error**: `MongoServerError: Authentication failed`
+
+**Common Causes**:
+
+- Backend connection string missing `authSource=admin`
+- Mismatched credentials between docker-compose.yml and backend code
+- Database container state corruption from previous runs
+
+**Solutions**:
+
+```zsh
+# Check backend connection string includes authSource=admin
+# Should be: mongodb://rootuser:rootpassword123@database:27017?authSource=admin
+
+# Reset database completely
+docker-compose down -v
+docker-compose up --build
+
+# Check credentials match in docker-compose.yml and Backend/index.js
+```
+
+### 6. Build Failures
 
 **Error**: Docker build fails during npm install
 
@@ -123,7 +146,7 @@ docker-compose logs -f <service-name>
 
 # Execute commands in containers
 docker-compose exec backend sh
-docker-compose exec database mongo
+docker-compose exec database mongosh
 ```
 
 ### Network Debugging
