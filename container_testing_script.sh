@@ -38,10 +38,10 @@ check_frontend() {
 }
 
 check_database() {
-  DB_CONTAINER_NAME="mongo_db_container"
+  DB_CONTAINER_NAME="database"
   echo "Verifying MongoDB container on port 27017..."
 
-  if docker exec "$DB_CONTAINER_NAME" mongo --eval "db.stats()" >/dev/null 2>&1; then
+  if docker exec "$DB_CONTAINER_NAME" mongosh -u rootuser -p rootpassword123 --authenticationDatabase admin --eval "db.adminCommand('ismaster')" --quiet >/dev/null 2>&1; then
     echo "Database is accessible ✅"
   else
     echo "❌ Database is NOT accessible"
