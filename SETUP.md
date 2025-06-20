@@ -1,138 +1,156 @@
 # Setup Instructions
 
-This guide will walk you through the process of containerizing and running the Full-Stack Todo List application using Docker and Docker Compose.
+This guide will help you get the Full-Stack Todo List application up and running on your computer using Docker. Don't worry if you're new to Docker - we'll walk through everything step by step!
 
-## Prerequisites
+## What You'll Need First
 
-Before you begin, ensure you have the following installed on your machine:
+Before we start, make sure you have these tools installed on your macOS machine:
 
-- Docker
-- Docker Compose
-- Git
+- **Docker Desktop**: Download from [docker.com](https://docker.com) - this includes both Docker and Docker Compose
+- **Git**: Usually pre-installed on macOS, or get it from [git-scm.com](https://git-scm.com)
+- **A terminal**: We'll use the built-in Terminal app with zsh (your default shell)
 
-## Build and Run the Containers
+### Quick Check
 
-### 1. Clone the repository
+Make sure you have the latest versions of Docker and Docker Compose. Open your Terminal and run:
 
-```bash
-  git clone https://github.com/icnoka/fullstack-todo-list.git
-  cd fullstack-todo-list
+```zsh
+docker --version
+docker-compose --version
+git --version
 ```
 
-If the repository has a different Git origin (from cloning the original repo), update it:
+If any command fails, you'll need to install that tool first.
 
-```bash
-  git remote remove origin
-  git remote add origin <your-github-repository-url>
-  git push -u origin main
+## Getting the Code
+
+### 1. Get the Project Files
+
+```zsh
+git clone git@github.com:blackdreamer15/azubi-cloud-assessment.git
+cd fullstack-todo-list
 ```
 
-### 2: Directory Structure Overview
+*Note: If you're working on your own fork, replace the URL with your repository URL.*
 
-The project is divided into the following components:
+### 2. Understanding What You Have
 
-- Frontend: React-based application (Vite).
-Backend: Node.js application (Express).
-Database: MongoDB.
+Take a look at the project structure. You should see:
 
-### 3. Dockerfile & Docker compose configurations
+- **Frontend/**: React application (the user interface)
+- **Backend/**: Node.js API server (handles data and logic)  
+- **docker-compose.yml**: The recipe that tells Docker how to run everything
+- **Dockerfiles**: Instructions for building each part of the app
 
-Make sure you have the following files:
+## Running the Application
 
-- **docker-compose.yml** at the root of the project
-- **Dockerfile** at the root of `Frontend` directory.
-- **Dockerfile** at the root of `Backend` directory.
+### 3. Start Everything Up
 
-### 4. Run the Containers
+This is the magic command that builds and starts all three parts of your application:
 
-Build and start the containers using Docker Compose:
-
-```bash
-  docker-compose up --build
+```zsh
+docker-compose up --build
 ```
 
-### 5. Access the Application
+**What's happening behind the scenes:**
 
-- Frontend: [http://localhost](http://localhost)
-- Backend API: [http://localhost:3000](http://localhost:3000)
-- MongoDB: Accessible internally at [mongodb://database:27017/todos](mongodb://database:27017/todos)
+- Docker builds the Frontend (React + nginx web server)
+- Docker builds the Backend (Node.js + Express API)
+- Docker starts MongoDB database
+- All three containers start talking to each other
 
-### 6. Stop the Containers
+You'll see lots of output - that's normal! Look for messages like "Frontend is ready" or "Backend listening on port 3000".
 
-To stop the application and remove the containers, run:
+### 4. Check If Everything Worked
 
-```bash
-  docker-compose down
+Open your web browser and visit these URLs:
+
+- **Your Todo App**: [http://localhost:5173](http://localhost:5173) - This is where you'll use the app
+- **API Server**: [http://localhost:3000](http://localhost:3000) - Technical endpoint (you might see a simple message)
+- **Database**: Running on port 27017 (not visible in browser, but working behind the scenes)
+
+If you see the Todo app interface, congratulations! Everything is working.
+
+## When You're Done - Stopping the Application
+
+### 5. Stop Everything Cleanly
+
+When you're finished using the app, stop all containers:
+
+```zsh
+docker-compose down
 ```
 
-## Network and Security Configurations
+This stops all containers but keeps your todo data safe.
 
-- **Frontend:** Exposes port 80 to the host.
-- **Backend:** Exposes port 3000 to the host.
-- **Database:** Exposes port 27017 to the host (use caution in production).
-- Use **environment variables** for sensitive data like database credentials.
-- Do not expose unnecessary ports in production.
+### 6. Complete Reset (If Needed)
 
-## Troubleshooting
+If you want to start completely fresh (warning: this deletes all your todos):
 
-### Common Issues
-
-- Port Already in Use:
-
-> Stop the process using the port, or change the host port in the docker-compose.yml file.
-
-- Database Connection Error:
-
-> Ensure MongoDB is running and accessible at mongodb://database:27017/todos.
-
-- Permission Denied:
-
-> Run Docker commands with sudo, or add your user to the docker group.
-
-- Frontend Not Loading:
-
-> Verify that the frontend container is running and accessible on port 80.
-
-### Useful Commands
-
-- List running containers:
-
-```bash
-  docker ps
+```zsh
+docker-compose down -v
 ```
 
-- View container logs:
+The `-v` flag removes the database volume, so you'll start with an empty todo list next time.
 
-```bash
-  docker logs <container_name>
+## Testing Your Setup
+
+### 7. Verify Everything Works
+
+We've included a simple test script to check all parts of your application:
+
+```zsh
+# Make the script executable
+chmod +x run.sh
+
+# Run the tests
+./run.sh
 ```
 
-## Container Testing Script
+This script will check:
 
-Use the following commands to test the components:
+- ✅ Frontend is accessible on port 5173
+- ✅ Backend API is responding on port 3000
+- ✅ Database is connected and working
+- ✅ All containers are communicating properly
 
-1. **Frontend:**
+If all tests pass, you're ready to start adding todos!
 
-Open a browser and navigate to [http://localhost](http://localhost).
+## Development Tips
 
-2. **Backend:**
+### Running in Background
 
-Use curl or Postman to test the backend:
+If you want to use your terminal for other things while the app runs:
 
-```bash
-  curl http://localhost:3000/api/todos
+```zsh
+# Start in background (detached mode)
+docker-compose up -d
+
+# Check status anytime
+docker-compose ps
+
+# View logs when needed
+docker-compose logs -f
 ```
 
-3. **Database:**
+### Rebuilding After Changes
 
-Enter the MongoDB shell:
+If you make changes to the code and want to see them:
 
-```bash
-  docker exec -it mongo-db mongosh
+```zsh
+# Rebuild and restart
+docker-compose up --build
+
+# Or rebuild specific service
+docker-compose build frontend
+docker-compose up frontend
 ```
 
-Check the database:
+## What's Next?
 
-```bash
-  show dbs
-```
+- Try adding some todos to test the full workflow
+- Check out `NETWORK_SECURITY.md` to understand how the containers communicate
+- Look at `TROUBLESHOOTING.md` if you run into any issues
+- Explore the code in `Frontend/` and `Backend/` directories
+
+Ready to start building your todo list? Your containerized application is now running and ready to use!
