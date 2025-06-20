@@ -28,7 +28,7 @@ If any command fails, you'll need to install that tool first.
 
 ```zsh
 git clone git@github.com:blackdreamer15/azubi-cloud-assessment.git
-cd fullstack-todo-list
+cd azubi-cloud-assessment
 ```
 
 *Note: If you're working on your own fork, replace the URL with your repository URL.*
@@ -38,7 +38,7 @@ cd fullstack-todo-list
 Take a look at the project structure. You should see:
 
 - **Frontend/**: React application (the user interface)
-- **Backend/**: Node.js API server (handles data and logic)  
+- **Backend/**: Node.js API server (handles data and logic)
 - **docker-compose.yml**: The recipe that tells Docker how to run everything
 - **Dockerfiles**: Instructions for building each part of the app
 
@@ -55,11 +55,15 @@ docker-compose up --build
 **What's happening behind the scenes:**
 
 - Docker builds the Frontend (React + nginx web server)
-- Docker builds the Backend (Node.js + Express API)
-- Docker starts MongoDB database
+- Docker builds the Backend (Node.js + Express API with MongoDB authentication)
+- Docker starts MongoDB database with secure authentication
 - All three containers start talking to each other
 
-You'll see lots of output - that's normal! Look for messages like "Frontend is ready" or "Backend listening on port 3000".
+You'll see lots of output - that's normal! Look for messages like:
+
+- "Server is running on http://localhost:3000"
+- "Connected to MongoDB"
+- Frontend container completing its build
 
 ### 4. Check If Everything Worked
 
@@ -97,22 +101,22 @@ The `-v` flag removes the database volume, so you'll start with an empty todo li
 
 ### 7. Verify Everything Works
 
-We've included a simple test script to check all parts of your application:
+We've included a testing script to check all parts of your application:
 
 ```zsh
-# Make the script executable
-chmod +x run.sh
+# Make the testing script executable
+chmod +x container_testing_script.sh
 
 # Run the tests
-./run.sh
+./container_testing_script.sh
 ```
 
 This script will check:
 
+- ✅ Backend is accessible on port 3000
 - ✅ Frontend is accessible on port 5173
-- ✅ Backend API is responding on port 3000
-- ✅ Database is connected and working
-- ✅ All containers are communicating properly
+- ✅ MongoDB is accessible on port 27017
+- ✅ Database authentication is working correctly
 
 If all tests pass, you're ready to start adding todos!
 
